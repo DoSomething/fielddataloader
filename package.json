@@ -1,0 +1,32 @@
+{
+  "name": "fielddataloader",
+  "version": "0.0.1",
+  "description": "A wrapper around Facebook's DataLoader which supports batching field queries.",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc --declarationMap -w",
+    "build": "tsc --declarationMap",
+    "test": "jest --watch",
+    "test:ci": "npm run lint && npm run format:ci && jest",
+    "lint": "eslint --ext .js src",
+    "format:ci": "prettier-check {src,config}/**/*.ts",
+    "format": "prettier --write {src,config}/**/*.ts"
+  },
+  "author": "David Furnes <dfurnes@dosomething.org>",
+  "license": "MIT",
+  "dependencies": {
+    "dataloader": "^1.4.0",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "@dosomething/eslint-config": "^5.0.1",
+    "@types/jest": "^24.0.18",
+    "@types/lodash": "^4.14.138",
+    "eslint": "^4.19.1",
+    "jest": "^24.9.0",
+    "prettier": "1.8.2",
+    "prettier-check": "^2.0.0",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
+  }
+}

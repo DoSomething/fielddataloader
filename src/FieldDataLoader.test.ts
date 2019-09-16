@@ -1,13 +1,14 @@
 import FieldDataLoader from "./FieldDataLoader";
-import { BatchLoadFn, Response } from './FieldDataLoader';
+import { BatchLoadFn, Response } from "./FieldDataLoader";
 
-const exampleResolver: BatchLoadFn<number> = (id: number): Promise<Response> => Promise.resolve({
-  id: id,
-  field1: "one",
-  field2: "two",
-  field3: "three",
-  field4: "four"
-});
+const exampleResolver: BatchLoadFn<number> = (id: number): Promise<Response> =>
+  Promise.resolve({
+    id: id,
+    field1: "one",
+    field2: "two",
+    field3: "three",
+    field4: "four"
+  });
 
 describe("FieldDataLoader", () => {
   it("can load fields a single item", async () => {

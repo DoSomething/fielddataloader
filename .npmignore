@@ -1,0 +1,13 @@
+.DS_Store
+.idea
+.vscode
+npm-debug.log
+node_modules
+coverage
+
+# additional npm ignores:
+.github/
+tsconfig.json
+jest.config.js
+src/**/*.test.ts
+dist/**/*.test.{js,d.ts,d.ts.map}

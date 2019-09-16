@@ -1,5 +1,5 @@
-import { get, isUndefined, zipObject } from "lodash";
-import DataLoader from "dataloader";
+import { get, isUndefined, zipObject } from 'lodash';
+import DataLoader from 'dataloader';
 
 export interface Response {
   [index: string]: any;
@@ -9,7 +9,7 @@ export type Key = number | string | symbol;
 
 export type BatchLoadFn<K extends Key> = (
   key: K,
-  fields: String[]
+  fields: String[],
 ) => Promise<Response | Error>;
 
 class FieldDataLoader<K extends Key> {
@@ -22,7 +22,7 @@ class FieldDataLoader<K extends Key> {
 
     // Configure our nested loaders (woah) for this type of item.
     this.loader = new DataLoader(async ids =>
-      ids.map(id => new DataLoader(async fields => this.loadItem(id, fields)))
+      ids.map(id => new DataLoader(async fields => this.loadItem(id, fields))),
     );
   }
 

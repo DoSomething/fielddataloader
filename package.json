@@ -12,6 +12,10 @@
     "format:ci": "prettier-check {src,config}/**/*.ts",
     "format": "prettier --write {src,config}/**/*.ts"
   },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
   "author": "David Furnes <dfurnes@dosomething.org>",
   "license": "MIT",
   "dependencies": {

@@ -2,7 +2,7 @@ import gql from 'tagged-template-noop';
 import { makeExecutableSchema } from 'graphql-tools';
 import { graphql, GraphQLResolveInfo } from 'graphql';
 
-import { getSelection } from './helpers';
+import { getSelection } from './getSelection';
 
 describe('getSelection', () => {
   it('can parse a simple selection', async () => {
@@ -68,6 +68,11 @@ describe('getSelection', () => {
     const selection = getSelection(info);
     expect(selection).toEqual(['firstName', 'age', 'birthdate']);
   });
+
+  it.todo('can parse a selection using @include(false) in query');
+  it.todo('can parse a selection using @include(true) in query');
+  it.todo('can parse a selection using @skip(false) in query');
+  it.todo('can parse a selection using @skip(true) in query');
 });
 
 // ----------------------------------------------------------------

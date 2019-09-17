@@ -1,0 +1,102 @@
+import gql from 'tagged-template-noop';
+import { makeExecutableSchema } from 'graphql-tools';
+import { graphql, GraphQLResolveInfo } from 'graphql';
+
+import { getSelection } from './helpers';
+
+describe('getSelection', () => {
+  it('can parse a simple selection', async () => {
+    const { info } = await resolve(gql`
+      query {
+        testQuery {
+          firstName
+          lastName
+        }
+      }
+    `);
+
+    const selection = getSelection(info);
+    expect(selection).toEqual(['firstName', 'lastName']);
+  });
+
+  it('can parse a selection with named fragment', async () => {
+    const { info } = await resolve(gql`
+      query {
+        testQuery {
+          firstName
+          lastName
+          ...TestFragment
+        }
+      }
+
+      fragment TestFragment on User {
+        email
+      }
+    `);
+
+    const selection = getSelection(info);
+    expect(selection).toEqual(['firstName', 'lastName', 'email']);
+  });
+
+  it('can parse a selection with inline fragment', async () => {
+    const { info } = await resolve(gql`
+      query {
+        testQuery {
+          firstName
+          lastName
+          ... on User {
+            email
+          }
+        }
+      }
+    `);
+
+    const selection = getSelection(info);
+    expect(selection).toEqual(['firstName', 'lastName', 'email']);
+  });
+
+// ----------------------------------------------------------------
+
+interface ResolverArguments {
+  root: any;
+  args: any;
+  context: any;
+  info: GraphQLResolveInfo;
+}
+
+const resolve = (query: string): Promise<ResolverArguments> => {
+  // A simple schema & "test" query we can use:
+  const typeDefs = gql`
+    directive @requires(fields: [String]!) on FIELD_DEFINITION
+
+    type User {
+      firstName: String
+      lastName: String
+      email: String
+      mobile: String
+      age: Int @requires(fields: ["birthdate"])
+    }
+
+    type Query {
+      testQuery: User
+    }
+  `;
+
+  // Build our schema, run a mock query through it, and
+  // resolve with the GraphQLFieldResolver arguments.
+  return new Promise(resolve => {
+    const schema = makeExecutableSchema({
+      typeDefs,
+      resolvers: {
+        Query: {
+          testQuery: (root, args, context, info) => {
+            resolve({ root, args, context, info });
+            return null;
+          },
+        },
+      },
+    });
+
+    graphql(schema, query);
+  });
+};

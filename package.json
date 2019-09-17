@@ -2,7 +2,8 @@
   "name": "fielddataloader",
   "version": "0.0.1",
   "description": "A wrapper around Facebook's DataLoader which supports batching field queries.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "tsc --declarationMap -w",
     "build": "tsc --declarationMap",
@@ -27,9 +28,12 @@
     "@types/jest": "^24.0.18",
     "@types/lodash": "^4.14.138",
     "eslint": "^4.19.1",
+    "graphql": "^14.5.6",
+    "graphql-tools": "^4.0.5",
     "jest": "^24.9.0",
     "prettier": "1.8.2",
     "prettier-check": "^2.0.0",
+    "tagged-template-noop": "^2.1.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.3"
   }

@@ -12,7 +12,7 @@ export type BatchLoadFn<K extends Key> = (
   fields: String[],
 ) => Promise<Response | Error>;
 
-class FieldDataLoader<K extends Key> {
+export class FieldDataLoader<K extends Key> {
   batchFunction: BatchLoadFn<K>;
   loader: DataLoader<K, DataLoader<string, any>>;
 
@@ -78,5 +78,3 @@ class FieldDataLoader<K extends Key> {
     return fields.map(field => get(result, field, null));
   }
 }
-
-export default FieldDataLoader;

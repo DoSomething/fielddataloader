@@ -1,5 +1,4 @@
-import FieldDataLoader from './FieldDataLoader';
-import { BatchLoadFn, Response } from './FieldDataLoader';
+import { FieldDataLoader, BatchLoadFn, Response } from './FieldDataLoader';
 
 const exampleResolver: BatchLoadFn<number> = (id: number): Promise<Response> =>
   Promise.resolve({

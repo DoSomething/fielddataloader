@@ -55,6 +55,21 @@ describe('getSelection', () => {
     expect(selection).toEqual(['firstName', 'lastName', 'email']);
   });
 
+  it('can extend a selection using @requires in the schema', async () => {
+    const { info } = await resolve(gql`
+      query {
+        testQuery {
+          firstName
+          age
+        }
+      }
+    `);
+
+    const selection = getSelection(info);
+    expect(selection).toEqual(['firstName', 'age', 'birthdate']);
+  });
+});
+
 // ----------------------------------------------------------------
 
 interface ResolverArguments {
@@ -74,7 +89,7 @@ const resolve = (query: string): Promise<ResolverArguments> => {
       lastName: String
       email: String
       mobile: String
-      age: Int @requires(fields: ["birthdate"])
+      age: Int @requires(fields: "birthdate")
     }
 
     type Query {

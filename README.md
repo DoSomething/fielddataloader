@@ -22,7 +22,7 @@ userLoader.load(2, ['first_name']);
 ```
 
 This is especially handy for
-[GraphQL resolvers](https://graphql.org/learn/execution)! Use it with the included [`getSelection` helper](#) to load only the specific fields that were requested in the given GraphQL query from your database or backend. For
+[GraphQL resolvers](https://graphql.org/learn/execution)! Use it with the included [`getSelection` helper](#getselectioninfo) to load only the specific fields that were requested in the given GraphQL query from your database or backend. For
 example:
 
 ```js

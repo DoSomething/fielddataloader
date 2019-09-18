@@ -7,7 +7,7 @@
   "scripts": {
     "start": "tsc --declarationMap -w",
     "build": "tsc --declarationMap",
-    "test": "jest --watch",
+    "test": "jest --watchAll",
     "test:ci": "npm run lint && npm run format:ci && jest",
     "lint": "eslint --ext .js src",
     "format:ci": "prettier-check {src,config}/**/*.ts",

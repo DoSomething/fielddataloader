@@ -10,7 +10,7 @@ export type Key = number | string | symbol;
 export type BatchLoadFn<K extends Key> = (
   key: K,
   fields: String[],
-) => Promise<Response | Error>;
+) => Promise<Response | null | Error>;
 
 export class FieldDataLoader<K extends Key> {
   batchFunction: BatchLoadFn<K>;

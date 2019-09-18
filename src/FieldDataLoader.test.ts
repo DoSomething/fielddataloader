@@ -52,7 +52,42 @@ describe('FieldDataLoader', () => {
     expect(batcher.mock.calls.length).toBe(1);
   });
 
-  it.todo('- can clear an individual item from cache');
-  it.todo('- can clear entire cache');
+  it('properly caches null responses', async () => {
+    const loader = new FieldDataLoader<number>(() => Promise.resolve(null));
+
+    const promise = loader.load(1, ['field1', 'field2']);
+    expect(promise).toBeInstanceOf(Promise);
+
+    expect(await promise).toEqual(null);
+  });
+
+  it('can clear an individual item from cache', async () => {
+    const batcher = jest.fn().mockImplementation(exampleResolver);
+    const loader = new FieldDataLoader<number>(batcher);
+
+    await loader.load(1, ['field1', 'field2']);
+    expect(batcher.mock.calls.length).toBe(1);
+
+    loader.clear(1);
+
+    await loader.load(1, ['field1', 'field2']);
+    expect(batcher.mock.calls.length).toBe(2);
+  });
+
+  it('can clear entire cache', async () => {
+    const batcher = jest.fn().mockImplementation(exampleResolver);
+    const loader = new FieldDataLoader<number>(batcher);
+
+    await loader.load(1, ['field1', 'field2']);
+    await loader.load(2, ['field1', 'field2']);
+    expect(batcher.mock.calls.length).toBe(2);
+
+    loader.clearAll();
+
+    await loader.load(1, ['field1', 'field2']);
+    await loader.load(2, ['field1', 'field2']);
+    expect(batcher.mock.calls.length).toBe(4);
+  });
+
   it.todo('- caches additional fields that were returned in response');
 });

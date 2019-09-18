@@ -1,4 +1,4 @@
-# FieldDataLoader
+# FieldDataLoader [![build status](https://github.com/dosomething/fielddataloader/workflows/test/badge.svg)](https://github.com/DoSomething/fielddataloader/actions) [![Coverage Status](https://coveralls.io/repos/github/DoSomething/fielddataloader/badge.svg?branch=master)](https://coveralls.io/github/DoSomething/fielddataloader?branch=master)
 
 [DataLoader](https://github.com/graphql/dataloader) is a utility for batching
 and caching requests to backend services. **FieldDataLoader** is a lightweight

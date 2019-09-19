@@ -1,6 +1,6 @@
 {
   "name": "fielddataloader",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A wrapper around Facebook's DataLoader which supports batching field queries.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

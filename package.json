@@ -11,7 +11,8 @@
     "test:ci": "npm run lint && npm run format:ci && jest",
     "lint": "eslint --ext .js src",
     "format:ci": "prettier-check {src,config}/**/*.ts",
-    "format": "prettier --write {src,config}/**/*.ts"
+    "format": "prettier --write {src,config}/**/*.ts",
+    "prepublish": "npm run build"
   },
   "prettier": {
     "singleQuote": true,

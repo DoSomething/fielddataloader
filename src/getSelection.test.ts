@@ -19,6 +19,20 @@ describe('getSelection', () => {
     expect(selection).toEqual(['firstName', 'lastName']);
   });
 
+  it('can parse a selection with __typename', async () => {
+    const { info } = await resolve(gql`
+      query {
+        testQuery {
+          __typename
+          firstName
+        }
+      }
+    `);
+
+    const selection = getSelection(info);
+    expect(selection).toEqual(['firstName']);
+  });
+
   it('can parse a selection with named fragment', async () => {
     const { info } = await resolve(gql`
       query {

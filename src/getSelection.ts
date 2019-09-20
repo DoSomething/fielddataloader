@@ -29,20 +29,24 @@ export const getSelection = (info: GraphQLResolveInfo): string[] => {
     parseNode(selection, info),
   );
 
-  // Iterate over our selection, and see if any of the selected
-  // fields are marked with `@requires` in the schema:
   const allFields = info.returnType.getFields();
-  return flatMap(selection, field => {
-    const { astNode } = allFields[field];
+  return flatMap(selection, name => {
+    const field = allFields[name];
 
-    return astNode ? parseRequiresDirective(astNode) : field;
+    // If the field doesn't exist in the schema, exclude it:
+    if (!field || !field.astNode) {
+      return [];
+    }
+
+    // Return the field & any others mentioned by `@requires`:
+    return parseRequiredFields(field.astNode);
   });
 };
 
 /**
  * Parse `@requires` directives for the given node.
  */
-const parseRequiresDirective = (node: FieldDefinitionNode): string[] => {
+const parseRequiredFields = (node: FieldDefinitionNode): string[] => {
   const directives = node.directives || [];
   const requiresDirective = directives.find(
     directive => directive.name.value === 'requires',

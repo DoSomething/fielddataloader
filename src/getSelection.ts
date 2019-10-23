@@ -1,5 +1,6 @@
-import { flatMap } from 'lodash';
+import { flatMap, isNil } from 'lodash';
 
+import Maybe from 'graphql/tsutils/Maybe';
 import {
   GraphQLResolveInfo,
   FragmentSpreadNode,
@@ -10,6 +11,7 @@ import {
   GraphQLInterfaceType,
   GraphQLNamedType,
   FieldDefinitionNode,
+  isListType,
 } from 'graphql';
 
 /**
@@ -17,11 +19,16 @@ import {
  * additional field dependencies indicated by `@required` in the schema.
  */
 export const getSelection = (info: GraphQLResolveInfo): string[] => {
-  const set = info.fieldNodes[0].selectionSet;
+  var set = info.fieldNodes[0].selectionSet;
+  const typeName = isListType(info.returnType)
+    ? info.returnType.ofType
+    : info.returnType.name;
+
+  const returnType = info.schema.getType(typeName);
 
   // If there's no fields on the selection or return type, there's
   // no point in doing any futher looking:
-  if (!set || !set.selections || !hasFields(info.returnType)) {
+  if (!set || !set.selections || !hasFields(returnType)) {
     return [];
   }
 
@@ -29,7 +36,7 @@ export const getSelection = (info: GraphQLResolveInfo): string[] => {
     parseNode(selection, info),
   );
 
-  const allFields = info.returnType.getFields();
+  const allFields = returnType.getFields();
   return flatMap(selection, name => {
     const field = allFields[name];
 
@@ -103,6 +110,7 @@ const isInlineFragment = (
  * Does the given node have fields (e.g. not a scalar, enum, etc)?
  */
 const hasFields = (
-  type: GraphQLOutputType | GraphQLNamedType,
+  type: GraphQLOutputType | GraphQLNamedType | Maybe<GraphQLNamedType>,
 ): type is GraphQLObjectType | GraphQLInterfaceType =>
+  !isNil(type) &&
   (type as GraphQLObjectType | GraphQLInterfaceType).getFields !== undefined;

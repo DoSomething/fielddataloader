@@ -83,6 +83,20 @@ describe('getSelection', () => {
     expect(selection).toEqual(['firstName', 'age', 'birthdate']);
   });
 
+  it('can parse a selection from a list return type', async () => {
+    const { info } = await resolve(gql`
+      query {
+        listQuery {
+          firstName
+          lastName
+        }
+      }
+    `);
+
+    const selection = getSelection(info);
+    expect(selection).toEqual(['firstName', 'lastName']);
+  });
+
   it.todo('can parse a selection using @include(false) in query');
   it.todo('can parse a selection using @include(true) in query');
   it.todo('can parse a selection using @skip(false) in query');
@@ -113,6 +127,7 @@ const resolve = (query: string): Promise<ResolverArguments> => {
 
     type Query {
       testQuery: User
+      listQuery: [User]
     }
   `;
 
@@ -124,6 +139,10 @@ const resolve = (query: string): Promise<ResolverArguments> => {
       resolvers: {
         Query: {
           testQuery: (root, args, context, info) => {
+            resolve({ root, args, context, info });
+            return null;
+          },
+          listQuery: (root, args, context, info) => {
             resolve({ root, args, context, info });
             return null;
           },

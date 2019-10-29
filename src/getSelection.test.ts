@@ -2,7 +2,67 @@ import gql from 'tagged-template-noop';
 import { makeExecutableSchema } from 'graphql-tools';
 import { graphql, GraphQLResolveInfo } from 'graphql';
 
-import { getSelection } from './getSelection';
+import { parseNode, getSelection } from './getSelection';
+
+describe('parseNode', () => {
+  it('can parse a simple selection', async () => {
+    const { info } = await resolve(gql`
+      query {
+        testQuery {
+          firstName
+          ... on User {
+            lastName
+          }
+        }
+      }
+    `);
+
+    const selection = parseNode(info.fieldNodes[0], info);
+    expect(selection).toHaveProperty('firstName');
+    expect(selection).toHaveProperty('lastName');
+  });
+
+  it('can parse a nested selection', async () => {
+    const { info } = await resolve(gql`
+      query {
+        relayQuery {
+          edges {
+            node {
+              firstName
+              lastName
+            }
+          }
+        }
+      }
+    `);
+
+    const selection = parseNode(info.fieldNodes[0], info);
+    expect(selection).toHaveProperty('edges.node');
+    expect(selection).toHaveProperty('edges.node.firstName');
+    expect(selection).toHaveProperty('edges.node.lastName');
+  });
+
+  it('can parse a selection with nested fragments', async () => {
+    const { info } = await resolve(gql`
+      query {
+        testQuery {
+          firstName
+          ... on User {
+            lastName
+            ... on User {
+              email
+            }
+          }
+        }
+      }
+    `);
+
+    const selection = parseNode(info.fieldNodes[0], info);
+    expect(selection).toHaveProperty('firstName');
+    expect(selection).toHaveProperty('lastName');
+    expect(selection).toHaveProperty('email');
+  });
+});
 
 describe('getSelection', () => {
   it('can parse a simple selection', async () => {
@@ -97,6 +157,24 @@ describe('getSelection', () => {
     expect(selection).toEqual(['firstName', 'lastName']);
   });
 
+  it('can parse a selection from a given path', async () => {
+    const { info } = await resolve(gql`
+      query {
+        relayQuery {
+          edges {
+            node {
+              firstName
+              lastName
+            }
+          }
+        }
+      }
+    `);
+
+    const selection = getSelection(info, 'User', 'edges.node');
+    expect(selection).toEqual(['firstName', 'lastName']);
+  });
+
   it.todo('can parse a selection using @include(false) in query');
   it.todo('can parse a selection using @include(true) in query');
   it.todo('can parse a selection using @skip(false) in query');
@@ -117,6 +195,21 @@ const resolve = (query: string): Promise<ResolverArguments> => {
   const typeDefs = gql`
     directive @requires(fields: [String]!) on FIELD_DEFINITION
 
+    type PageInfo {
+      hasNextPage: Boolean
+      hasPreviousPage: Boolean
+    }
+
+    type RelayConnection {
+      pageInfo: PageInfo
+      edges: UserEdge
+    }
+
+    type UserEdge {
+      cursor: String
+      node: User
+    }
+
     type User {
       firstName: String
       lastName: String
@@ -128,6 +221,7 @@ const resolve = (query: string): Promise<ResolverArguments> => {
     type Query {
       testQuery: User
       listQuery: [User]
+      relayQuery: RelayConnection
     }
   `;
 
@@ -143,6 +237,10 @@ const resolve = (query: string): Promise<ResolverArguments> => {
             return null;
           },
           listQuery: (root, args, context, info) => {
+            resolve({ root, args, context, info });
+            return null;
+          },
+          relayQuery: (root, args, context, info) => {
             resolve({ root, args, context, info });
             return null;
           },

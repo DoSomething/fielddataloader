@@ -20,7 +20,7 @@ import {
  * Get a list of fields requested in the given query, including any
  * additional field dependencies indicated by `@required` in the schema.
  */
-export const getSelection = (
+export const getFields = (
   info: GraphQLResolveInfo,
   returnType?: string,
   path?: string,
@@ -39,7 +39,7 @@ export const getSelection = (
   }
 
   // Parse any fragments into an easily traversable tree:
-  const set = parseNode(info.fieldNodes[0], info);
+  const set = getSelection(info.fieldNodes[0], info);
 
   // We'll then get the given path, if we're scoping to a subset,
   // and read the keys at that level of the query tree:
@@ -111,10 +111,8 @@ type RecursiveDictionary<T> = T|{[x: string]: RecursiveDictionary<T>};
 /**
  * Recursively parse nodes & any fragments into a
  * dictionary-like structure for easy traversal.
- * 
- * @TODO: Rename to 'getSelection'.
  */
-export const parseNode = (
+export const getSelection = (
   node: FieldNode,
   info: GraphQLResolveInfo,
 ): RecursiveDictionary<FieldNode> => {
@@ -125,7 +123,7 @@ export const parseNode = (
   const flattenedSet = flattenSelectionSet(node.selectionSet, info);
   const keyedSet = keyBy(flattenedSet, 'name.value')
 
-  return mapValues(keyedSet, n => parseNode(n, info));
+  return mapValues(keyedSet, n => getSelection(n, info));
 };
 
 /**

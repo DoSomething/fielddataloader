@@ -2,9 +2,9 @@ import gql from 'tagged-template-noop';
 import { makeExecutableSchema } from 'graphql-tools';
 import { graphql, GraphQLResolveInfo } from 'graphql';
 
-import { parseNode, getSelection } from './getSelection';
+import { getSelection, getFields } from './getSelection';
 
-describe('parseNode', () => {
+describe('getSelection', () => {
   it('can parse a simple selection', async () => {
     const { info } = await resolve(gql`
       query {
@@ -17,7 +17,7 @@ describe('parseNode', () => {
       }
     `);
 
-    const selection = parseNode(info.fieldNodes[0], info);
+    const selection = getSelection(info.fieldNodes[0], info);
     expect(selection).toHaveProperty('firstName');
     expect(selection).toHaveProperty('lastName');
   });
@@ -36,7 +36,7 @@ describe('parseNode', () => {
       }
     `);
 
-    const selection = parseNode(info.fieldNodes[0], info);
+    const selection = getSelection(info.fieldNodes[0], info);
     expect(selection).toHaveProperty('edges.node');
     expect(selection).toHaveProperty('edges.node.firstName');
     expect(selection).toHaveProperty('edges.node.lastName');
@@ -57,14 +57,14 @@ describe('parseNode', () => {
       }
     `);
 
-    const selection = parseNode(info.fieldNodes[0], info);
+    const selection = getSelection(info.fieldNodes[0], info);
     expect(selection).toHaveProperty('firstName');
     expect(selection).toHaveProperty('lastName');
     expect(selection).toHaveProperty('email');
   });
 });
 
-describe('getSelection', () => {
+describe('getFields', () => {
   it('can parse a simple selection', async () => {
     const { info } = await resolve(gql`
       query {
@@ -75,7 +75,7 @@ describe('getSelection', () => {
       }
     `);
 
-    const selection = getSelection(info);
+    const selection = getFields(info);
     expect(selection).toEqual(['firstName', 'lastName']);
   });
 
@@ -89,7 +89,7 @@ describe('getSelection', () => {
       }
     `);
 
-    const selection = getSelection(info);
+    const selection = getFields(info);
     expect(selection).toEqual(['firstName']);
   });
 
@@ -108,7 +108,7 @@ describe('getSelection', () => {
       }
     `);
 
-    const selection = getSelection(info);
+    const selection = getFields(info);
     expect(selection).toEqual(['firstName', 'lastName', 'email']);
   });
 
@@ -125,7 +125,7 @@ describe('getSelection', () => {
       }
     `);
 
-    const selection = getSelection(info);
+    const selection = getFields(info);
     expect(selection).toEqual(['firstName', 'lastName', 'email']);
   });
 
@@ -139,7 +139,7 @@ describe('getSelection', () => {
       }
     `);
 
-    const selection = getSelection(info);
+    const selection = getFields(info);
     expect(selection).toEqual(['firstName', 'age', 'birthdate']);
   });
 
@@ -153,7 +153,7 @@ describe('getSelection', () => {
       }
     `);
 
-    const selection = getSelection(info);
+    const selection = getFields(info);
     expect(selection).toEqual(['firstName', 'lastName']);
   });
 
@@ -171,7 +171,7 @@ describe('getSelection', () => {
       }
     `);
 
-    const selection = getSelection(info, 'User', 'edges.node');
+    const selection = getFields(info, 'User', 'edges.node');
     expect(selection).toEqual(['firstName', 'lastName']);
   });
 

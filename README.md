@@ -22,8 +22,10 @@ userLoader.load(2, ['first_name']);
 ```
 
 This is especially handy for
-[GraphQL resolvers](https://graphql.org/learn/execution)! Use it with the included [`getSelection` helper](#getselectioninfo) to load only the specific fields that were requested in the given GraphQL query from your database or backend. For
-example:
+[GraphQL resolvers](https://graphql.org/learn/execution)! Use it with the
+included [`getSelection` helper](#getselectioninfo) to load only the specific
+fields that were requested in the given GraphQL query from your database or
+backend. For example:
 
 ```js
 import { FieldDataLoader, getSelection } from 'fielddataloader';
@@ -78,9 +80,15 @@ Clears the entire cache. To be used when some event results in unknown
 invalidations across this particular `FieldDataLoader`. Returns itself for
 method chaining.
 
-##### `getSelection(info)`
+##### `getFields(info, [returnType], [path])`
 
-Given the `info` argument from a [GraphQL resolver](https://graphql.org/learn/execution/#root-fields-resolvers), returns an array containing the names of any requested fields. Supports named & inline fragments, and fields referenced by Apollo Federation's [`@requires` directive](https://www.apollographql.com/docs/apollo-server/federation/federation-spec/#requires).
+Given the `info` argument from a
+[GraphQL resolver](https://graphql.org/learn/execution/#root-fields-resolvers),
+returns an array containing the names of any requested fields. Supports named &
+inline fragments, and fields referenced by Apollo Federation's
+[`@requires` directive](https://www.apollographql.com/docs/apollo-server/federation/federation-spec/#requires).
+You can optionally pass a `returnType` and `path` if reading fields nested
+within a query (rather than at the root).
 
 ## License
 

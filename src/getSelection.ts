@@ -16,7 +16,7 @@ import {
   isListType,
 } from 'graphql';
 
-type RecursiveDictionary<T> = T|{[x: string]: RecursiveDictionary<T>};
+type RecursiveDictionary<T> = T | { [x: string]: RecursiveDictionary<T> };
 
 /**
  * Get a list of fields requested in the given query, including any
@@ -45,7 +45,7 @@ export const getFields = (
 
   // We'll then get the given path, if we're scoping to a subset,
   // and read the keys at that level of the query tree:
-  const subset = path ? get(set, path) : set; 
+  const subset = path ? get(set, path) : set;
   const selection = Object.keys(subset);
 
   return flatMap(selection, name => {
@@ -105,7 +105,6 @@ const flattenSelectionSet = (
 
     return node;
   });
-
 };
 
 /**
@@ -116,12 +115,12 @@ export const getSelection = (
   node: FieldNode,
   info: GraphQLResolveInfo,
 ): RecursiveDictionary<FieldNode> => {
-  if (! node.selectionSet) {
+  if (!node.selectionSet) {
     return node;
   }
 
   const flattenedSet = flattenSelectionSet(node.selectionSet, info);
-  const keyedSet = keyBy(flattenedSet, 'name.value')
+  const keyedSet = keyBy(flattenedSet, 'name.value');
 
   return mapValues(keyedSet, n => getSelection(n, info));
 };

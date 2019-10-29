@@ -16,6 +16,8 @@ import {
   isListType,
 } from 'graphql';
 
+type RecursiveDictionary<T> = T|{[x: string]: RecursiveDictionary<T>};
+
 /**
  * Get a list of fields requested in the given query, including any
  * additional field dependencies indicated by `@required` in the schema.
@@ -105,8 +107,6 @@ const flattenSelectionSet = (
   });
 
 };
-
-type RecursiveDictionary<T> = T|{[x: string]: RecursiveDictionary<T>};
 
 /**
  * Recursively parse nodes & any fragments into a
